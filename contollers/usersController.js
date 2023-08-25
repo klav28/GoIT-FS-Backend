@@ -1,24 +1,28 @@
-import User from "../models/user.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import gravatar from "gravatar";
-import Jimp from "jimp";
-import { nanoid } from "nanoid";
+import User from '../models/user.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import gravatar from 'gravatar';
+import Jimp from 'jimp';
+import { nanoid } from 'nanoid';
 
-import { HttpError, sendMail, createVerifyEmail } from "../helpers/index.js";
+import { HttpError, sendMail, createVerifyEmail } from '../helpers/index.js';
 
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 
-const avatarPath = path.resolve("public", "avatars");
+const avatarPath = path.resolve('public', 'avatars');
 
 const { JWT_SECRET } = process.env;
 
-import { controlWrapper } from "../decorators/index.js";
+import { controlWrapper } from '../decorators/index.js';
 
 const getCurrent = (req, res) => {
   const { email } = req.user;
   res.json({ email });
+};
+
+const sayHallo = (req, res) => {
+  res.json('Hallo');
 };
 
 const registerUser = async (req, res) => {
@@ -26,13 +30,13 @@ const registerUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user) {
-    throw HttpError(409, "Email In Use");
+    throw HttpError(409, 'Email In Use');
   }
 
   const hashPass = await bcrypt.hash(password, 10);
   const avatar = gravatar.url(email, {
-    s: "200",
-    d: "monsterid",
+    s: '200',
+    d: 'monsterid',
   });
 
   const verificationToken = nanoid();
@@ -58,7 +62,7 @@ const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
   if (!user) {
-    throw HttpError(404, "User not found");
+    throw HttpError(404, 'User not found');
   }
   await User.findByIdAndUpdate(user._id, {
     verify: true,
@@ -66,7 +70,7 @@ const verifyEmail = async (req, res) => {
   });
 
   res.json({
-    message: "Verification successful",
+    message: 'Verification successful',
   });
 };
 
@@ -74,11 +78,11 @@ const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(404, "User Not Found");
+    throw HttpError(404, 'User Not Found');
   }
 
   if (user.verify) {
-    throw HttpError(400, "Verification has already been passed");
+    throw HttpError(400, 'Verification has already been passed');
   }
 
   const verifyEmail = createVerifyEmail({
@@ -89,7 +93,7 @@ const resendVerifyEmail = async (req, res) => {
   await sendMail(verifyEmail);
 
   res.json({
-    message: "Resend email success",
+    message: 'Resend email success',
   });
 };
 
@@ -97,14 +101,14 @@ const signinUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password wrong");
+    throw HttpError(401, 'Email or password wrong');
   }
   const comparePass = await bcrypt.compare(password, user.password);
   if (!comparePass) {
-    throw HttpError(401, "Email or password wrong");
+    throw HttpError(401, 'Email or password wrong');
   }
   const payload = { id: user._id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '23h' });
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token: token,
@@ -114,9 +118,9 @@ const signinUser = async (req, res) => {
 
 const signoutUser = async (req, res) => {
   const { _id } = req.body;
-  const user = await User.findByIdAndUpdate(_id, { token: "" });
+  const user = await User.findByIdAndUpdate(_id, { token: '' });
   if (!user) {
-    throw HttpError(401, "Not authorized");
+    throw HttpError(401, 'Not authorized');
   }
   res.status(204).json();
 };
@@ -142,17 +146,14 @@ const patchAvatarUser = async (req, res) => {
       .write(newPath); // save
   });
   await fs.rm(tempPath);
-  const avatarURL = path.join("avatars", filename);
+  const avatarURL = path.join('avatars', filename);
   console.log(avatarURL);
-  const result = await User.findByIdAndUpdate(
-    _id,
-    { ...req.body, avatarURL },
-    { new: true }
-  );
+  const result = await User.findByIdAndUpdate(_id, { ...req.body, avatarURL }, { new: true });
   res.json(result);
 };
 
 export default {
+  sayHallo: controlWrapper(sayHallo),
   getCurrent: controlWrapper(getCurrent),
   registerUser: controlWrapper(registerUser),
   verifyEmail: controlWrapper(verifyEmail),

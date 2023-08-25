@@ -19,6 +19,8 @@ usersRouter.post(
   usersController.registerUser
 );
 
+usersRouter.get("/", usersController.sayHallo);
+
 usersRouter.get("/verify/:verificationToken", usersController.verifyEmail);
 
 usersRouter.post(
