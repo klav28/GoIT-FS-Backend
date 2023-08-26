@@ -2,29 +2,26 @@ import Joi from "joi";
 
 import { emailRegexp } from "../constants/user-constants.js";
 
-const usersSchema = Joi.object({
+const userCredentialsSchema = Joi.object({
+  name: Joi.string().required(),
   email: Joi.string()
+    .pattern(emailRegexp)
     .required()
     .email({ minDomainSegments: 2 })
-    .pattern(emailRegexp)
-    .messages({ "any.required": "missing fields" }),
+    .messages({ "any.required": "missing required field email" }),
   password: Joi.string().min(6).required(),
-  subscription: Joi.string().valid("starter", "pro", "business"),
 });
 
-const userEmailSchema = Joi.object({
+const userLoginSchema = Joi.object({
   email: Joi.string()
     .pattern(emailRegexp)
     .required()
+    .email({ minDomainSegments: 2 })
     .messages({ "any.required": "missing required field email" }),
-});
-
-const usersUpdateSubscriptionSchema = Joi.object({
-  subscription: Joi.string().valid("starter", "pro", "business"),
+  password: Joi.string().min(6).required(),
 });
 
 export default {
-  usersSchema,
-  usersUpdateSubscriptionSchema,
-  userEmailSchema,
+  userCredentialsSchema,
+  userLoginSchema,
 };

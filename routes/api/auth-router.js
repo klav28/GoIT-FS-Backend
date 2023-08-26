@@ -5,7 +5,7 @@ import usersSchema from "../../schemas/users-joischeme.js";
 import { validateBody } from "../../decorators/index.js";
 import {
   isEmptyBody,
-  isValidId,
+  //  isValidId,
   authenticate,
   upload,
 } from "../../middleware/index.js";
@@ -15,38 +15,30 @@ const usersRouter = express.Router();
 usersRouter.post(
   "/register",
   isEmptyBody,
-  validateBody(usersSchema.usersSchema),
+  validateBody(usersSchema.userCredentialsSchema),
   usersController.registerUser
 );
 
-usersRouter.get("/", usersController.sayHallo);
+// usersRouter.get("/", usersController.sayHallo);
 
-usersRouter.get("/verify/:verificationToken", usersController.verifyEmail);
+// usersRouter.get("/verify/:verificationToken", usersController.verifyEmail);
 
-usersRouter.post(
-  "/verify",
-  validateBody(usersSchema.userEmailSchema),
-  usersController.resendVerifyEmail
-);
+// usersRouter.post(
+//   "/verify",
+//   validateBody(usersSchema.userEmailSchema),
+//   usersController.resendVerifyEmail
+// );
 
 usersRouter.post(
   "/signin",
   isEmptyBody,
-  validateBody(usersSchema.usersSchema),
+  validateBody(usersSchema.userLoginSchema),
   usersController.signinUser
 );
 
 usersRouter.get("/current", authenticate, usersController.getCurrent);
 
-usersRouter.post("/signout", isEmptyBody, usersController.signoutUser);
-
-usersRouter.patch(
-  "/:id/subscription",
-  isValidId,
-  isEmptyBody,
-  validateBody(usersSchema.usersUpdateSubscriptionSchema),
-  usersController.updateSubscriptionUser
-);
+usersRouter.post("/signout", authenticate, usersController.signoutUser);
 
 usersRouter.patch(
   "/avatars",
