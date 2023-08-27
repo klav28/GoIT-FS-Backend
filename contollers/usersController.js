@@ -123,14 +123,12 @@ const signoutUser = async (req, res) => {
 
 const patchUserAvatar = async (req, res) => {
   const { _id } = req.user;
-  console.log("REQ: ", req.file);
+
   const dUri = new DatauriParser();
   const file = dUri.format(
     path.extname(req.file.originalname).toString(),
     req.file.buffer
   ).content;
-
-  console.log("FILE: ", file);
 
   //  const { path: filePath } = req.file;
   //  console.log("FILE:", req.file);
@@ -141,9 +139,13 @@ const patchUserAvatar = async (req, res) => {
 
   // const file = dataUri(req).content;
 
+console.log("before cloudinary");
+
   const { url: avatarURL } = await cloudinary.uploader.upload(file, {
     folder: "avatars",
   });
+
+console.log("after cloudinary");
 
   // const { path: tempPath, filename } = req.file;
   //  const newPath = path.join(avatarPath, filename);
