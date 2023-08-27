@@ -130,6 +130,8 @@ const patchUserAvatar = async (req, res) => {
     req.file.buffer
   ).content;
 
+  console.log("FILE: ", file);
+
   //  const { path: filePath } = req.file;
   //  console.log("FILE:", req.file);
   //  console.log("FilePATH:", filePath);
