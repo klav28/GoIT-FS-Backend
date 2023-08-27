@@ -123,7 +123,7 @@ const signoutUser = async (req, res) => {
 
 const patchUserAvatar = async (req, res) => {
   const { _id } = req.user;
-
+  console.log("REQ: ", req.file);
   const dUri = new DatauriParser();
   const file = dUri.format(
     path.extname(req.file.originalname).toString(),
