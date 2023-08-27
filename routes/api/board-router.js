@@ -26,12 +26,6 @@ boardRouter.patch(
     boardIconCtrl.patchBoardIcon
 )
 
-boardRouter.get('/', authenticate, boardCtrl.getBoards)
-boardRouter.get('/:boardId', authenticate, boardCtrl.getBoardById)
-boardRouter.post('/', authenticate, boardCtrl.createBoard)
-boardRouter.patch('/:boardId', authenticate, boardCtrl.updateBoardById)
-boardRouter.delete('/:boardId', authenticate, boardCtrl.deleteBoardById)
-
 boardRouter.get('/background', authenticate, boardBackgroundCtrl.getBoardBackgrounds)
 boardRouter.post(
     '/background',
@@ -45,5 +39,11 @@ boardRouter.patch(
     saveImage(BOARD_BACKGROUND_MIME_TYPES).single('background'),
     boardBackgroundCtrl.patchBoardBackground
 )
+
+boardRouter.get('/', authenticate, boardCtrl.getBoards)
+boardRouter.get('/:boardId', authenticate, boardCtrl.getBoardById)
+boardRouter.post('/', authenticate, boardCtrl.createBoard)
+boardRouter.patch('/:boardId', authenticate, boardCtrl.updateBoardById)
+boardRouter.delete('/:boardId', authenticate, boardCtrl.deleteBoardById)
 
 export default boardRouter;
