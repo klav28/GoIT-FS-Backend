@@ -1,0 +1,5 @@
+export { default as boardCtrl } from './board.js'
+export { default as boardIconCtrl } from './board-icon.js'
+export { default as boardBackgroundCtrl } from './board-background.js'
+export { default as boardColumnCtrl } from './board-column.js'
+export { default as boardColumnCardCtrl } from './board-column-card.js'
