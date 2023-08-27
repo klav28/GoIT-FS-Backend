@@ -139,13 +139,9 @@ const patchUserAvatar = async (req, res) => {
 
   // const file = dataUri(req).content;
 
-console.log("before cloudinary");
-
   const { url: avatarURL } = await cloudinary.uploader.upload(file, {
     folder: "avatars",
   });
-
-console.log("after cloudinary");
 
   // const { path: tempPath, filename } = req.file;
   //  const newPath = path.join(avatarPath, filename);

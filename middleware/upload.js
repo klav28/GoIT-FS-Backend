@@ -15,7 +15,7 @@ import path from "path";
 const storage = multer.memoryStorage();
 
 const limits = {
-  fileSize: 1048576,
+  fileSize: 1048576 * 4,
 };
 
 const upload = multer({
