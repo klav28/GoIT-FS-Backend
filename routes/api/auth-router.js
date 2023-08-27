@@ -1,6 +1,6 @@
 import express from "express";
 
-import usersController from "../../contollers/usersController.js";
+import usersController from "../../controllers/usersController.js";
 import usersSchema from "../../schemas/users-joischeme.js";
 import { validateBody } from "../../decorators/index.js";
 import {
