@@ -1,10 +1,10 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import gravatar from "gravatar";
-import Jimp from "jimp";
+// import Jimp from "jimp";
 import { nanoid } from "nanoid";
 import { defaultAvatar } from "../constants/user-constants.js";
+import DatauriParser from "datauri/parser.js";
 
 import {
   HttpError,
@@ -13,10 +13,8 @@ import {
   cloudinary,
 } from "../helpers/index.js";
 
-import fs from "fs/promises";
-// import path from "path";
-
-// const avatarPath = path.resolve("public", "avatars");
+// import fs from "fs/promises";
+import path from "path";
 
 const { JWT_SECRET } = process.env;
 
@@ -125,8 +123,23 @@ const signoutUser = async (req, res) => {
 
 const patchUserAvatar = async (req, res) => {
   const { _id } = req.user;
-  const { path: filePath } = req.file;
-  const { url: avatarURL } = await cloudinary.uploader.upload(filePath, {
+
+  const dUri = new DatauriParser();
+  const file = dUri.format(
+    path.extname(req.file.originalname).toString(),
+    req.file.buffer
+  ).content;
+
+  //  const { path: filePath } = req.file;
+  //  console.log("FILE:", req.file);
+  //  console.log("FilePATH:", filePath);
+  //  const { url: avatarURL } = await cloudinary.uploader.upload(filePath, {
+  //   folder: "avatars",
+  //  });
+
+  // const file = dataUri(req).content;
+
+  const { url: avatarURL } = await cloudinary.uploader.upload(file, {
     folder: "avatars",
   });
 
@@ -141,7 +154,8 @@ const patchUserAvatar = async (req, res) => {
   // });
   // await fs.rm(tempPath);
   //  const avatarURL = path.join("avatars", filename);
-  await fs.unlink(filePath);
+  // await fs.unlink(filePath);
+
   const result = await User.findByIdAndUpdate(
     _id,
     { ...req.body, avatarURL },
