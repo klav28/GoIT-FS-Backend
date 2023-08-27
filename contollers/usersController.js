@@ -24,7 +24,7 @@ import { controlWrapper } from "../decorators/index.js";
 
 const getCurrent = (req, res) => {
   const { name, email, avatarURL } = req.user;
-  res.json({ name, email, avatarURL });
+  res.json({ name, email, theme, avatarURL });
 };
 
 const registerUser = async (req, res) => {
