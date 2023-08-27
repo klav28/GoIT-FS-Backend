@@ -23,7 +23,7 @@ const { JWT_SECRET } = process.env;
 import { controlWrapper } from "../decorators/index.js";
 
 const getCurrent = (req, res) => {
-  const { name, email, avatarURL } = req.user;
+  const { name, email, theme, avatarURL } = req.user;
   res.json({ name, email, theme, avatarURL });
 };
 
