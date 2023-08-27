@@ -21,7 +21,12 @@ const userLoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const usersUpdateTheme = Joi.object({
+  theme: Joi.string().valid("Light", "Dark", "Violet"),
+});
+
 export default {
   userCredentialsSchema,
   userLoginSchema,
+  usersUpdateTheme,
 };

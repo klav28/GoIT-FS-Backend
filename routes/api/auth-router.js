@@ -41,10 +41,17 @@ usersRouter.get("/current", authenticate, usersController.getCurrent);
 usersRouter.post("/signout", authenticate, usersController.signoutUser);
 
 usersRouter.patch(
-  "/avatars",
+  "/avatar",
   upload.single("avatar"),
   authenticate,
-  usersController.patchAvatarUser
+  usersController.patchUserAvatar
+);
+
+usersRouter.patch(
+  "/theme",
+  authenticate,
+  validateBody(usersSchema.usersUpdateTheme),
+  usersController.updateUserTheme
 );
 
 export default usersRouter;
