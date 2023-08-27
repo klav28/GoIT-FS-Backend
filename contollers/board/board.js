@@ -40,11 +40,11 @@ const createBoard = async (req, res) => {
 const deleteBoardById = async (req, res) => {
     const { boardId } = req.params;
 
-    const updatedBoard = await Board.findByIdAndDelete(boardId)
+    const deletedBoard = await Board.findByIdAndDelete(boardId)
 
-    if (!updatedBoard) return res.status(404).json({ message: "Board not found" })
+    if (!deletedBoard) return res.status(404).json({ message: "Board not found" })
 
-    return res.status(200).json(updatedBoard)
+    return res.status(200).json(deletedBoard)
 };
 
 const updateBoardById = async (req, res) => {
