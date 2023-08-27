@@ -4,13 +4,19 @@ import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import Jimp from "jimp";
 import { nanoid } from "nanoid";
+import { defaultAvatar } from "../constants/user-constants.js";
 
-import { HttpError, sendMail, createVerifyEmail } from "../helpers/index.js";
+import {
+  HttpError,
+  sendMail,
+  createVerifyEmail,
+  cloudinary,
+} from "../helpers/index.js";
 
 import fs from "fs/promises";
-import path from "path";
+// import path from "path";
 
-const avatarPath = path.resolve("public", "avatars");
+// const avatarPath = path.resolve("public", "avatars");
 
 const { JWT_SECRET } = process.env;
 
@@ -21,10 +27,6 @@ const getCurrent = (req, res) => {
   res.json({ name, email, avatarURL });
 };
 
-// const sayHallo = (req, res) => {
-//   res.json("Hallo");
-// };
-
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -34,19 +36,13 @@ const registerUser = async (req, res) => {
   }
 
   const hashPass = await bcrypt.hash(password, 10);
-  const avatar =
-    "https:" +
-    gravatar.url(email, {
-      s: "200",
-      d: "mp",
-    });
 
   const verificationToken = nanoid();
 
   const newUser = await User.create({
     ...req.body,
     password: hashPass,
-    avatarURL: avatar,
+    avatarURL: defaultAvatar,
     verificationToken,
   });
 
@@ -127,35 +123,49 @@ const signoutUser = async (req, res) => {
   res.status(204).json();
 };
 
-const patchAvatarUser = async (req, res) => {
+const patchUserAvatar = async (req, res) => {
   const { _id } = req.user;
-  const { path: tempPath, filename } = req.file;
-  const newPath = path.join(avatarPath, filename);
-  Jimp.read(tempPath, (err, avatar) => {
-    if (err) throw err;
-    avatar
-      .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER) // resize
-      .quality(60) // set JPEG quality
-      .write(newPath); // save
+  const { path: filePath } = req.file;
+  const { url: avatarURL } = await cloudinary.uploader.upload(filePath, {
+    folder: "avatars",
   });
-  await fs.rm(tempPath);
-  const avatarURL = path.join("avatars", filename);
-  console.log(avatarURL);
+
+  // const { path: tempPath, filename } = req.file;
+  //  const newPath = path.join(avatarPath, filename);
+  // Jimp.read(tempPath, (err, avatar) => {
+  //   if (err) throw err;
+  //   avatar
+  //     .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER) // resize
+  //     .quality(60) // set JPEG quality
+  //     .write(newPath); // save
+  // });
+  // await fs.rm(tempPath);
+  //  const avatarURL = path.join("avatars", filename);
+  await fs.unlink(filePath);
   const result = await User.findByIdAndUpdate(
     _id,
     { ...req.body, avatarURL },
     { new: true }
   );
-  res.json(result);
+  res.json(result.avatarURL);
+};
+
+const updateUserTheme = async (req, res) => {
+  const { _id } = req.user;
+  const result = await User.findByIdAndUpdate(_id, req.body, { new: true });
+  if (!result) {
+    throw HttpError(404, `Theme update failed`);
+  }
+  res.json(result.theme);
 };
 
 export default {
-  // sayHallo: controlWrapper(sayHallo),
   getCurrent: controlWrapper(getCurrent),
   registerUser: controlWrapper(registerUser),
   // verifyEmail: controlWrapper(verifyEmail),
   // resendVerifyEmail: controlWrapper(resendVerifyEmail),
   signinUser: controlWrapper(signinUser),
   signoutUser: controlWrapper(signoutUser),
-  patchAvatarUser: controlWrapper(patchAvatarUser),
+  patchUserAvatar: controlWrapper(patchUserAvatar),
+  updateUserTheme: controlWrapper(updateUserTheme),
 };
