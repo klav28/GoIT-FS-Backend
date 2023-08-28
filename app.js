@@ -15,7 +15,7 @@ const swaggerOptions = {
   definition: {
     openapi: "3.1.0",
     info: {
-      title: "GoIT fs backend",
+      title: "GoIT FS backend",
       version: "0.1.0",
       description:
         "",
@@ -25,6 +25,9 @@ const swaggerOptions = {
       },
     },
     servers: [
+      {
+        url: "https://taskpro-backend-zulp.onrender.com",
+      },
       {
         url: "http://localhost:3000",
       },
@@ -40,7 +43,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use("/api-docs", swaggerUi.serve,  swaggerUi.setup(specs, { explorer: true }));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
 app.use("/api/users", usersRouter);
 app.use("/api/board", boardRouters);
 
