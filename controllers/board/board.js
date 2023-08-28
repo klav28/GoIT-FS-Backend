@@ -1,4 +1,5 @@
 import { controlWrapper } from '../../decorators/index.js';
+import HttpError from '../../helpers/HttpError.js';
 import { Board } from '../../models/index.js';
 import User from '../../models/user.js';
 
@@ -9,7 +10,9 @@ const getBoards = async (req, res) => {
         .populate('background')
         .select(['-author']);
 
-    if (!boards.length) return res.status(404).json({ message: "Boards not found" })
+    if (!boards.length) {
+        throw HttpError(404, "Boards not found");
+    }
 
     return res.json(boards)
 };
@@ -18,7 +21,9 @@ const getBoardById = async (req, res) => {
     const { boardId } = req.params;
     const board = await Board.findById(boardId)
 
-    if (!board) return res.status(404).json({ message: "Board not found" })
+    if (!boards) {
+        throw HttpError(404, "Board not found");
+    }
 
     return res.json(board)
 };
@@ -42,7 +47,9 @@ const deleteBoardById = async (req, res) => {
 
     const deletedBoard = await Board.findByIdAndDelete(boardId)
 
-    if (!deletedBoard) return res.status(404).json({ message: "Board not found" })
+    if (!deletedBoard) {
+        throw HttpError(404, "Board not found");
+    }
 
     return res.status(200).json(deletedBoard)
 };
@@ -52,9 +59,11 @@ const updateBoardById = async (req, res) => {
 
     const updatedBoard = await Board.findByIdAndUpdate(boardId, {
         ...req.body
-    })
+    }, {new: true})
 
-    if (!updatedBoard) return res.status(404).json({ message: "Board not found" })
+    if (!updatedBoard) {
+        throw HttpError(404, "Board not found");
+    }
 
     return res.status(200).json(updatedBoard)
 };

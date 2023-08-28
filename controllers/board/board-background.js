@@ -37,7 +37,7 @@ const patchBoardBackground = async (req, res) => {
     if (size === 'sm') bg.background_sm_src = url
     if (size === 'icon') bg.background_icon_src = url
 
-    const boardBg = await BoardBackground.findByIdAndUpdate(backgroundId, { ...bg })
+    const boardBg = await BoardBackground.findByIdAndUpdate(backgroundId, { ...bg }, {new: true})
 
     return res.status(200).json(boardBg)
 };

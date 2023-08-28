@@ -10,6 +10,20 @@ import {
   upload,
 } from "../../middleware/index.js";
 
+/**
+ * @swagger
+ * 
+ * components:
+ *  securitySchemes:
+ *    bearerAuth:            
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
+ * 
+ * security:
+ *  - bearerAuth: []       
+ */
+
 const usersRouter = express.Router();
 
 usersRouter.post(

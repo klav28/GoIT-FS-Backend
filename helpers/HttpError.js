@@ -6,6 +6,19 @@ const messageList = {
   409: "Conflict",
 };
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: number
+ *         message:
+ *           type: string
+ */
+
 const HttpError = (status, message = messageList[status]) => {
   const error = new Error(message);
   error.status = status;
