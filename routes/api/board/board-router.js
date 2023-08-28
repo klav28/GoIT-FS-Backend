@@ -1,20 +1,9 @@
 import express from "express";
 import {
-  BOARD_BACKGROUND_MIME_TYPES,
-  BOARD_ICON_MIME_TYPES,
-} from "../../../constants/board-constants.js";
-import {
   boardCtrl,
-  boardIconCtrl,
-  boardBackgroundCtrl,
 } from "../../../controllers/board/index.js";
-import validateBody from "../../../decorators/validateBody.js";
 
 import { authenticate, saveImage } from "../../../middleware/index.js";
-import boardSchema from "../../../schemas/board-joischeme.js";
-// import usersSchema from '../../schemas/users-joischeme.js';
-// import { validateBody } from '../../decorators/index.js';
-// import { isEmptyBody, isValidId, authenticate, upload } from '../../middleware/index.js';
 
 /**
  * @swagger

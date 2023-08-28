@@ -1,3 +1,5 @@
 export { default as Board } from './board.js'
 export { default as BoardBackground } from './board-background.js'
 export { default as BoardIcon } from './board-icon.js'
+export { default as BoardColumn } from './board-column.js'
+export { default as BoardColumnCard } from './board-column-card.js'
