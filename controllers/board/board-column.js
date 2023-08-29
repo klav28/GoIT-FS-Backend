@@ -71,13 +71,13 @@ const updateBoardColumnById = async (req, res) => {
         throw HttpError(404, "Board not found");
     }
 
-    const deletedBoardColumn = await BoardColumn.findByIdAndUpdate(columnId, {title}, {new: true})
+    const updatedBoardColumn = await BoardColumn.findByIdAndUpdate(columnId, {title}, {new: true})
 
-    if (!deletedBoardColumn) {
+    if (!updatedBoardColumn) {
         throw HttpError(404, "Board not found");
     }
 
-    return res.status(200).json(deletedBoardColumn)
+    return res.status(200).json(updatedBoardColumn)
 };
 
 

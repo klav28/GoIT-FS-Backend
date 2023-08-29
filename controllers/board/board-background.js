@@ -5,7 +5,7 @@ import { uploadImage } from '../../service/cloudinary.service.js';
 const getBoardBackgrounds = async (req, res) => {
     const backgrounds = await BoardBackground.find()
 
-    if (!backgrounds.length) return res.status(404).json({ message: "Backgrounds not found" })
+    if (!backgrounds) return res.status(404).json({ message: "Backgrounds not found" })
 
     return res.status(200).json(backgrounds)
 };
