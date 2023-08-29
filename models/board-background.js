@@ -33,7 +33,6 @@ const boardBackgroundSchema = new mongoose.Schema(
   {
     background_xxl_src: {
       type: String,
-      required: [true, "background xxl is required"],
     },
     background_lg_src: {
       type: String,

@@ -10,7 +10,7 @@ const getBoards = async (req, res) => {
         .populate('background')
         .select(['-author']);
 
-    if (!boards.length) {
+    if (!boards) {
         throw HttpError(404, "Boards not found");
     }
 

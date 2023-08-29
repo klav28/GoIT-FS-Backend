@@ -1,14 +1,8 @@
 import express from "express";
-import {
-  BOARD_BACKGROUND_MIME_TYPES,
-  BOARD_ICON_MIME_TYPES,
-} from "../../../constants/board-constants.js";
 import {boardColumnCtrl
 } from "../../../controllers/board/index.js";
-import validateBody from "../../../decorators/validateBody.js";
 
-import { authenticate, saveImage } from "../../../middleware/index.js";
-import boardSchema from "../../../schemas/board-joischeme.js";
+import { authenticate } from "../../../middleware/index.js";
 
 /**
  * @swagger
@@ -81,7 +75,7 @@ import boardSchema from "../../../schemas/board-joischeme.js";
  *         required: true
  *         schema:
  *           type: string
- *     summary: Patch board column by boardId abd columnId
+ *     summary: Patch board column by boardId and columnId
  *     tags: [Board column]
  *     requestBody:
  *       required: true
@@ -110,7 +104,7 @@ import boardSchema from "../../../schemas/board-joischeme.js";
  *         required: true
  *         schema:
  *           type: string
- *     summary: Delete board column by boardId abd columnId
+ *     summary: Delete board column by boardId and columnId
  *     tags: [Board column]
  *     responses:
  *       200:

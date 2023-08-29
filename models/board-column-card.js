@@ -31,10 +31,37 @@ import { BOARD_COLUMN_CARD_PRIORITY } from "../constants/board-constants.js";
  *           type: string
  *           format: date
  * 
+ *     BoardColumnCardResult:
+ *       type: object
+ *       required:
+ *         - title
+ *       properties:
+ *         _id:
+ *           type: string
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         priority:
+ *           type: string
+ *           enum: ["WITHOUT", "LOW", "MEDIUM", "HIGH"]
+ *         deadline:
+ *           type: string
+ *           format: date
+ *         createdAt:
+ *           type: string
+ *           format: date
+ *         updatedAt:
+ *           type: string
+ *           format: date
+ * 
  *     BoardColumnCardCreate:
  *       type: object
  *       required:
  *         - title
+ *         - description
+ *         - priority
+ *         - deadline
  *       properties:
  *         title:
  *           type: string
