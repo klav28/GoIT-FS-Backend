@@ -5,10 +5,8 @@ import {
 import {
   boardIconCtrl,
 } from "../../../controllers/board/index.js";
-import validateBody from "../../../decorators/validateBody.js";
 
 import { authenticate, saveImage } from "../../../middleware/index.js";
-import boardSchema from "../../../schemas/board-joischeme.js";
 
 /**
  * @swagger
@@ -39,7 +37,6 @@ boardIconRouter.get("/", authenticate, boardIconCtrl.getBoardIcons);
 boardIconRouter.post(
   "/",
   authenticate,
-  validateBody(boardSchema.boardSchema),
   saveImage(BOARD_ICON_MIME_TYPES).single("icon"),
   boardIconCtrl.createBoardIcon
 );
