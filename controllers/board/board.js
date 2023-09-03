@@ -39,7 +39,13 @@ const createBoard = async (req, res) => {
         background,
     })
 
-    return res.status(200).json(board)
+    const boardPopulate = await Board.findOne({ _id: board._id })
+        .populate('icon')
+        .populate('background')
+        .select(['-author']);
+
+
+    return res.status(200).json(boardPopulate)
 };
 
 const deleteBoardById = async (req, res) => {
@@ -59,13 +65,18 @@ const updateBoardById = async (req, res) => {
 
     const updatedBoard = await Board.findByIdAndUpdate(boardId, {
         ...req.body
-    }, {new: true})
+    }, { new: true })
 
     if (!updatedBoard) {
         throw HttpError(404, "Board not found");
     }
 
-    return res.status(200).json(updatedBoard)
+    const boardPopulate = await Board.findOne({ _id: updatedBoard._id })
+        .populate('icon')
+        .populate('background')
+        .select(['-author']);
+
+    return res.status(200).json(boardPopulate)
 };
 
 export default {

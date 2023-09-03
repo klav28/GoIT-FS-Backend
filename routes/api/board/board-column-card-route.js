@@ -1,5 +1,5 @@
 import express from "express";
-import {boardColumnCardCtrl} from "../../../controllers/board/index.js";
+import { boardColumnCardCtrl } from "../../../controllers/board/index.js";
 
 import { authenticate } from "../../../middleware/index.js";
 
@@ -9,6 +9,33 @@ import { authenticate } from "../../../middleware/index.js";
  * tags:
  *   name: Board column card
  *   description: The board column card managing API
+ * /api/board/{boardId}/column/card:
+ *   get:
+ *     parameters:
+ *       - name: boardId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     summary: Lists card by boardId
+ *     tags: [Board column card]
+ *     responses:
+ *       200:
+ *         description: Lists card by boardId
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BoardColumnCardResult'
+ *       404:
+ *         description: Boards not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Error'
+ *     security:
+ *       - bearerAuth: []
  * /api/board/{boardId}/column/{columnId}/card:
  *   get:
  *     parameters:
@@ -136,8 +163,9 @@ import { authenticate } from "../../../middleware/index.js";
  *       - bearerAuth: []
  */
 
-const boardColumnCardRouter = express.Router({strict: true});
+const boardColumnCardRouter = express.Router({ strict: true });
 
+boardColumnCardRouter.get("/:boardId/column/card", authenticate, boardColumnCardCtrl.getCardsByBoardId);
 boardColumnCardRouter.get("/:boardId/column/:columnId/card", authenticate, boardColumnCardCtrl.getBoardColumnCards);
 boardColumnCardRouter.post("/:boardId/column/:columnId/card", authenticate, boardColumnCardCtrl.createBoardColumnCard);
 boardColumnCardRouter.patch("/:boardId/column/:columnId/card/:cardId", authenticate, boardColumnCardCtrl.updateBoardColumnCardById);
