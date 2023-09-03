@@ -3,7 +3,9 @@ import logger from "morgan";
 import cors from "cors";
 // import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger/swagger-taskpro.json" assert { type: "json" };
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const swaggerDocument = require("./swagger/swagger-taskpro.json");
 
 import usersRouter from "./routes/api/auth-router.js";
 import boardRouters from "./routes/api/board/index.js";
