@@ -1,0 +1,1151 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Task Pro backend server",
+    "version" : "0.2.2",
+    "title" : "Task Pro Backend",
+    "termsOfService" : "http://swagger.io/terms/",
+    "contact" : {
+      "email" : "klav28@gmail.com"
+    }
+  },
+  "tags" : [ {
+    "name" : "board",
+    "description" : "The board managing API"
+  }, {
+    "name" : "board icon",
+    "description" : "The board icon managing API"
+  }, {
+    "name" : "board background",
+    "description" : "The board background managing API"
+  }, {
+    "name" : "board column",
+    "description" : "The board managing API"
+  }, {
+    "name" : "board column card",
+    "description" : "The board column card managing API"
+  }, {
+    "name" : "user",
+    "description" : "Managing users"
+  } ],
+  "paths" : {
+    "/api/users/register" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Create new user",
+        "description" : "Registering new user.",
+        "operationId" : "registerUser",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewUser"
+              }
+            }
+          },
+          "description" : "User credentials"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "name" : {
+                      "type" : "string"
+                    },
+                    "email" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Email In Use"
+          }
+        }
+      }
+    },
+    "/api/users/signin" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Sign In registered user",
+        "description" : "Sign In registered user",
+        "operationId" : "signinUser",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisteredUser"
+              }
+            }
+          },
+          "description" : "User credentials"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "token" : {
+                      "type" : "string"
+                    },
+                    "user" : {
+                      "type" : "object",
+                      "properties" : {
+                        "email" : {
+                          "type" : "string"
+                        },
+                        "avatarURL" : {
+                          "type" : "string"
+                        },
+                        "theme" : {
+                          "type" : "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Email or password wrong"
+          }
+        }
+      }
+    },
+    "/api/users/current" : {
+      "get" : {
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "tags" : [ "user" ],
+        "summary" : "Return current user credentials",
+        "description" : "Return current user credentials",
+        "operationId" : "getCurrent",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "name" : {
+                      "type" : "string"
+                    },
+                    "email" : {
+                      "type" : "string"
+                    },
+                    "theme" : {
+                      "type" : "string",
+                      "enum" : [ "Light", "Dark", "Violet" ]
+                    },
+                    "avatarURL" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Not bearer | Not ID"
+          }
+        }
+      }
+    },
+    "/api/users/signout" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Signs out user",
+        "description" : "Signs out current logged user",
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "operationId" : "logoutUser",
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation"
+          },
+          "401" : {
+            "description" : "Not bearer | Not authorized"
+          }
+        }
+      }
+    },
+    "/api/users/avatar" : {
+      "patch" : {
+        "tags" : [ "user" ],
+        "summary" : "Update user avatar image",
+        "description" : "Update user avatar image from file.",
+        "operationId" : "patchUserAvatar",
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "avatar" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          },
+          "description" : "User avatar"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/theme" : {
+      "patch" : {
+        "tags" : [ "user" ],
+        "summary" : "Update user theme",
+        "description" : "Update user frontend theme",
+        "operationId" : "updateUserTheme",
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "theme" : {
+                    "type" : "string",
+                    "enum" : [ "Light", "Dark", "Violet" ]
+                  }
+                }
+              }
+            }
+          },
+          "description" : "User theme - Light, Dark, Violet"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Light"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/board" : {
+      "get" : {
+        "summary" : "Lists all the board",
+        "tags" : [ "board" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Board"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Boards not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "summary" : "Create a new board",
+        "tags" : [ "board" ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Board"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Getting board by boardId",
+        "tags" : [ "board" ],
+        "responses" : {
+          "200" : {
+            "description" : "board by id",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Board"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Board not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "patch" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Patch board by boardId",
+        "tags" : [ "board" ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Board"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Delete board by boardId",
+        "tags" : [ "board" ],
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Board"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/icon" : {
+      "get" : {
+        "summary" : "board icon list",
+        "tags" : [ "board icon" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardIcon"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/background" : {
+      "get" : {
+        "summary" : "board background list",
+        "tags" : [ "board background" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardBackground"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}/column" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Lists all the board column",
+        "tags" : [ "board column" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board column",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardColumn"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Boards not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Create a new board column",
+        "tags" : [ "board column" ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardColumnCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board column.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumn"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}/column/{columnId}" : {
+      "patch" : {
+        "summary" : "Patch board column by boardId and columnId",
+        "tags" : [ "board column" ],
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardColumnCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumn"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "summary" : "Delete board column by boardId and columnId",
+        "tags" : [ "board column" ],
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumn"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}/column/card" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Lists card by boardId",
+        "tags" : [ "board column card" ],
+        "responses" : {
+          "200" : {
+            "description" : "Lists card by boardId",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardColumnCardResult"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Boards not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}/column/{columnId}/card" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Lists all the board column card",
+        "tags" : [ "board column card" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board column card",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardColumnCardResult"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Boards not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "summary" : "Create a new board column card",
+        "tags" : [ "Board column card" ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardColumnCardCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board column card.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumnCardResult"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/{boardId}/column/{columnId}/card/{cardId}" : {
+      "patch" : {
+        "summary" : "Patch board column card by boardId and columnId and cardId",
+        "tags" : [ "board column card" ],
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "cardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BoardColumnCardCreate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumnCardResult"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "summary" : "Delete board column card by boardId and columnId and cardId",
+        "tags" : [ "board column card" ],
+        "parameters" : [ {
+          "name" : "boardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "columnId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "cardId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The created Board.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BoardColumnCardResult"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "servers" : [ {
+    "url" : "https://taskpro-backend-zulp.onrender.com/"
+  }, {
+    "url" : "http://localhost:3000/"
+  } ],
+  "components" : {
+    "schemas" : {
+      "NewUser" : {
+        "type" : "object",
+        "required" : [ "name", "email", "password" ],
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "User Name"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "User E-mail"
+          },
+          "password" : {
+            "type" : "string",
+            "description" : "User Password"
+          }
+        }
+      },
+      "RegisteredUser" : {
+        "type" : "object",
+        "required" : [ "email", "password" ],
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "description" : "User E-mail"
+          },
+          "password" : {
+            "type" : "string",
+            "description" : "User Password"
+          }
+        }
+      },
+      "Board" : {
+        "type" : "object",
+        "required" : [ "title", "icon", "background" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "description" : "The auto-generated id of the board"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "The title of your board"
+          },
+          "icon" : {
+            "$ref" : "#/components/schemas/BoardIcon"
+          },
+          "background" : {
+            "$ref" : "#/components/schemas/BoardBackground"
+          },
+          "author" : {
+            "type" : "string",
+            "description" : "ref to user _id, creating by auth token"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardCreate" : {
+        "type" : "object",
+        "required" : [ "title", "icon", "background" ],
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "The title of your board"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "ref to icon _id"
+          },
+          "background" : {
+            "type" : "string",
+            "description" : "ref to background _id"
+          }
+        }
+      },
+      "BoardIcon" : {
+        "type" : "object",
+        "required" : [ "title", "icon", "background" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "description" : "The auto-generated id of the board"
+          },
+          "icon_src" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardBackground" : {
+        "type" : "object",
+        "required" : [ "background_xxl_src" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "description" : "The auto-generated id of the board"
+          },
+          "background_xxl_src" : {
+            "type" : "string"
+          },
+          "background_lg_src" : {
+            "type" : "string"
+          },
+          "background_sm_src" : {
+            "type" : "string"
+          },
+          "background_icon_src" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardColumn" : {
+        "type" : "object",
+        "required" : [ "title" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "description" : "The auto-generated id of the board"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "The title of your board"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardColumnCreate" : {
+        "type" : "object",
+        "required" : [ "title" ],
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "The title of your board"
+          }
+        }
+      },
+      "BoardColumnCard" : {
+        "type" : "object",
+        "required" : [ "title" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "string",
+            "enum" : [ "WITHOUT", "LOW", "MEDIUM", "HIGH" ]
+          },
+          "deadline" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "column" : {
+            "$ref" : "#/components/schemas/BoardColumn"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardColumnCardResult" : {
+        "type" : "object",
+        "required" : [ "title" ],
+        "properties" : {
+          "_id" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "string",
+            "enum" : [ "WITHOUT", "LOW", "MEDIUM", "HIGH" ]
+          },
+          "deadline" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "column" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "BoardColumnCardCreate" : {
+        "type" : "object",
+        "required" : [ "title", "description", "priority", "deadline" ],
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "string",
+            "enum" : [ "WITHOUT", "LOW", "MEDIUM", "HIGH" ]
+          },
+          "deadline" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "Error" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "number"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}
