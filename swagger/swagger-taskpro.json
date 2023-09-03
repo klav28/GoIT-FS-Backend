@@ -745,7 +745,7 @@
           }
         } ],
         "summary" : "Create a new board column card",
-        "tags" : [ "Board column card" ],
+        "tags" : [ "board column card" ],
         "requestBody" : {
           "required" : true,
           "content" : {
