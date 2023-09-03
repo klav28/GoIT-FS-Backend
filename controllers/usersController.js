@@ -108,7 +108,7 @@ const signinUser = async (req, res) => {
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token: token,
-    user: { email: user.email, subsciption: user.subscription },
+    user: { email: user.email, avatarURL: user.avatarURL, theme: user.theme },
   });
 };
 

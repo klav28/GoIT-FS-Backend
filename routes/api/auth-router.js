@@ -10,20 +10,6 @@ import {
   upload,
 } from "../../middleware/index.js";
 
-/**
- * @swagger
- * 
- * components:
- *  securitySchemes:
- *    bearerAuth:            
- *      type: http
- *      scheme: bearer
- *      bearerFormat: JWT
- * 
- * security:
- *  - bearerAuth: []       
- */
-
 const usersRouter = express.Router();
 
 usersRouter.post(
@@ -32,8 +18,6 @@ usersRouter.post(
   validateBody(usersSchema.userCredentialsSchema),
   usersController.registerUser
 );
-
-// usersRouter.get("/", usersController.sayHallo);
 
 // usersRouter.get("/verify/:verificationToken", usersController.verifyEmail);
 
