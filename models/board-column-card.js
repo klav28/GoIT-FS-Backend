@@ -48,6 +48,8 @@ import { BOARD_COLUMN_CARD_PRIORITY } from "../constants/board-constants.js";
  *         deadline:
  *           type: string
  *           format: date
+ *         column: 
+ *           type: string
  *         createdAt:
  *           type: string
  *           format: date
@@ -74,7 +76,7 @@ import { BOARD_COLUMN_CARD_PRIORITY } from "../constants/board-constants.js";
  *           type: string
  *           format: date
  */
- 
+
 const boardColumnCardSchema = new mongoose.Schema(
   {
     title: {
