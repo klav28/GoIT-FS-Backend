@@ -20,7 +20,7 @@ const getBoardColumnCards = async (req, res) => {
 
     const columns = await BoardColumnCard.find({
         column: columnId
-    }).select(['-column'])
+    })
 
     if (!columns) {
         throw HttpError(404, "Cards not found");
@@ -50,7 +50,7 @@ const getCardsByBoardId = async (req, res) => {
         'column': {
             $in: columnIds
         }
-    }).select(['-column'])
+    })
 
     if (!cards) {
         throw HttpError(404, "Cards not found");
@@ -128,7 +128,7 @@ const updateBoardColumnCardById = async (req, res) => {
         throw HttpError(404, "Column not found");
     }
 
-    const updateCard = await BoardColumnCard.findByIdAndUpdate(cardId, { ...req.body }, { new: true }).select(['-column'])
+    const updateCard = await BoardColumnCard.findByIdAndUpdate(cardId, { ...req.body }, { new: true })
 
     if (!updateCard) {
         throw HttpError(404, "Card not found");
