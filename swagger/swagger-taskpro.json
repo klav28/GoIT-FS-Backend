@@ -11,13 +11,19 @@
   },
   "tags" : [ {
     "name" : "user",
-    "description" : "Operations about user"
+    "description" : "Managing users"
   }, {
     "name" : "board",
     "description" : "The board managing API"
+  }, {
+    "name" : "board icon",
+    "description" : "The board icon managing API"
+  }, {
+    "name" : "board background",
+    "description" : "The board background managing API"
   } ],
   "paths" : {
-    "/users/register" : {
+    "/api/users/register" : {
       "post" : {
         "tags" : [ "user" ],
         "summary" : "Create new user",
@@ -59,7 +65,7 @@
         }
       }
     },
-    "/users/signin" : {
+    "/api/users/signin" : {
       "post" : {
         "tags" : [ "user" ],
         "summary" : "Sign In registered user",
@@ -112,7 +118,7 @@
         }
       }
     },
-    "/users/current" : {
+    "/api/users/current" : {
       "get" : {
         "security" : [ {
           "bearerAuth" : [ ]
@@ -153,7 +159,7 @@
         }
       }
     },
-    "/users/signout" : {
+    "/api/users/signout" : {
       "post" : {
         "tags" : [ "user" ],
         "summary" : "Signs out user",
@@ -172,7 +178,7 @@
         }
       }
     },
-    "/users/avatar" : {
+    "/api/users/avatar" : {
       "patch" : {
         "tags" : [ "user" ],
         "summary" : "Update user avatar image",
@@ -212,7 +218,7 @@
         }
       }
     },
-    "/users/theme" : {
+    "/api/users/theme" : {
       "patch" : {
         "tags" : [ "user" ],
         "summary" : "Update user theme",
@@ -418,12 +424,60 @@
           "bearerAuth" : [ ]
         } ]
       }
+    },
+    "/api/board/icon" : {
+      "get" : {
+        "summary" : "board icon list",
+        "tags" : [ "board icon" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardIcon"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/api/board/background" : {
+      "get" : {
+        "summary" : "board background list",
+        "tags" : [ "board background" ],
+        "responses" : {
+          "200" : {
+            "description" : "The list of the board",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BoardBackground"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
     }
   },
   "servers" : [ {
-    "url" : "https://taskpro-backend-zulp.onrender.com/api/"
+    "url" : "https://taskpro-backend-zulp.onrender.com/"
   }, {
-    "url" : "http://localhost:3000/api/"
+    "url" : "http://localhost:3000/"
   } ],
   "components" : {
     "schemas" : {
