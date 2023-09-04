@@ -32,8 +32,8 @@
     "/api/users/register" : {
       "post" : {
         "tags" : [ "user" ],
-        "summary" : "Create new user",
-        "description" : "Registering new user.",
+        "summary" : "Create & logging in new user",
+        "description" : "Registering & logging in new user.",
         "operationId" : "registerUser",
         "requestBody" : {
           "required" : true,
@@ -54,11 +54,25 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "name" : {
+                    "token" : {
                       "type" : "string"
                     },
-                    "email" : {
-                      "type" : "string"
+                    "user" : {
+                      "type" : "object",
+                      "properties" : {
+                        "name" : {
+                          "type" : "string"
+                        },
+                        "email" : {
+                          "type" : "string"
+                        },
+                        "avatarURL" : {
+                          "type" : "string"
+                        },
+                        "theme" : {
+                          "type" : "string"
+                        }
+                      }
                     }
                   }
                 }
@@ -102,6 +116,9 @@
                     "user" : {
                       "type" : "object",
                       "properties" : {
+                        "name" : {
+                          "type" : "string"
+                        },
                         "email" : {
                           "type" : "string"
                         },
