@@ -1,24 +1,19 @@
-import User from "../models/user.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import User from '../models/user.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 // import Jimp from "jimp";
-import { nanoid } from "nanoid";
-import { defaultAvatar } from "../constants/user-constants.js";
-import DatauriParser from "datauri/parser.js";
+import { nanoid } from 'nanoid';
+import { defaultAvatar, PASS_EXPIRED } from '../constants/user-constants.js';
+import DatauriParser from 'datauri/parser.js';
 
-import {
-  HttpError,
-  sendMail,
-  createVerifyEmail,
-  cloudinary,
-} from "../helpers/index.js";
+import { HttpError, sendMail, createVerifyEmail, cloudinary } from '../helpers/index.js';
 
 // import fs from "fs/promises";
-import path from "path";
+import path from 'path';
 
 const { JWT_SECRET } = process.env;
 
-import { controlWrapper } from "../decorators/index.js";
+import { controlWrapper } from '../decorators/index.js';
 
 const getCurrent = (req, res) => {
   const { name, email, theme, avatarURL } = req.user;
@@ -30,7 +25,7 @@ const registerUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user) {
-    throw HttpError(409, "Email In Use");
+    throw HttpError(409, 'Email In Use');
   }
 
   const hashPass = await bcrypt.hash(password, 10);
@@ -44,14 +39,23 @@ const registerUser = async (req, res) => {
     verificationToken,
   });
 
+  const payload = { id: newUser._id };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: PASS_EXPIRED });
+
+  const loggedUser = await User.findByIdAndUpdate(newUser._id, { token });
+  res.status(201).json({
+    token: token,
+    user: {
+      name: loggedUser.name,
+      email: loggedUser.email,
+      avatarURL: loggedUser.avatarURL,
+      theme: loggedUser.theme,
+    },
+  });
+
   // const verifyEmail = createVerifyEmail({ email, verificationToken });
 
   // await sendMail(verifyEmail);
-
-  res.status(201).json({
-    name: newUser.name,
-    email: newUser.email,
-  });
 };
 
 // const verifyEmail = async (req, res) => {
@@ -97,26 +101,26 @@ const signinUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password wrong");
+    throw HttpError(401, 'Email or password wrong');
   }
   const comparePass = await bcrypt.compare(password, user.password);
   if (!comparePass) {
-    throw HttpError(401, "Email or password wrong");
+    throw HttpError(401, 'Email or password wrong');
   }
   const payload = { id: user._id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: PASS_EXPIRED });
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token: token,
-    user: { email: user.email, avatarURL: user.avatarURL, theme: user.theme },
+    user: { name: user.name, email: user.email, avatarURL: user.avatarURL, theme: user.theme },
   });
 };
 
 const signoutUser = async (req, res) => {
   const { _id } = req.user;
-  const user = await User.findByIdAndUpdate(_id, { token: "" });
+  const user = await User.findByIdAndUpdate(_id, { token: '' });
   if (!user) {
-    throw HttpError(401, "Not authorized");
+    throw HttpError(401, 'Not authorized');
   }
   res.status(204).json();
 };
@@ -125,10 +129,7 @@ const patchUserAvatar = async (req, res) => {
   const { _id } = req.user;
 
   const dUri = new DatauriParser();
-  const file = dUri.format(
-    path.extname(req.file.originalname).toString(),
-    req.file.buffer
-  ).content;
+  const file = dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer).content;
 
   //  const { path: filePath } = req.file;
   //  console.log("FILE:", req.file);
@@ -140,7 +141,7 @@ const patchUserAvatar = async (req, res) => {
   // const file = dataUri(req).content;
 
   const { url: avatarURL } = await cloudinary.uploader.upload(file, {
-    folder: "avatars",
+    folder: 'avatars',
   });
 
   // const { path: tempPath, filename } = req.file;
@@ -156,11 +157,7 @@ const patchUserAvatar = async (req, res) => {
   //  const avatarURL = path.join("avatars", filename);
   // await fs.unlink(filePath);
 
-  const result = await User.findByIdAndUpdate(
-    _id,
-    { ...req.body, avatarURL },
-    { new: true }
-  );
+  const result = await User.findByIdAndUpdate(_id, { ...req.body, avatarURL }, { new: true });
   res.json(result.avatarURL);
 };
 
