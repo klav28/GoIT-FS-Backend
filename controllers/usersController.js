@@ -118,6 +118,8 @@ const getCurrent = (req, res) => {
 
 const patchCurrent = async (req, res) => {
   const { _id } = req.user;
+  let userPassword = req.user.password;
+  const { password } = req.body;
 
   // const dUri = new DatauriParser();
   // const file = dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer).content;
@@ -126,11 +128,17 @@ const patchCurrent = async (req, res) => {
   //   folder: 'avatars',
   // });
 
-  // const password = await bcrypt.hash(req.body.password, 10);
+  if (password !== '********') {
+    userPassword = await bcrypt.hash(req.body.password, 10);
+  }
 
-  const result = await User.findByIdAndUpdate(_id, { ...req.body }, { new: true });
-  const { name, email, theme, avatarURL } = result;
-  res.json({ name, email, theme, avatarURL });
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { ...req.body, password: userPassword },
+    { new: true }
+  );
+  const { name, email } = result;
+  res.json({ name, email});
 };
 
 const signoutUser = async (req, res) => {

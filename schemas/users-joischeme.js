@@ -25,19 +25,8 @@ const usersUpdateTheme = Joi.object({
   theme: Joi.string().valid('Light', 'Dark', 'Violet'),
 });
 
-const userUpdateSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string()
-    .pattern(emailRegexp)
-    .required()
-    .email({ minDomainSegments: 2 })
-    .messages({ 'any.required': 'missing required field email' }),
-  theme: Joi.string().valid('Light', 'Dark', 'Violet'),
-});
-
 export default {
   userCredentialsSchema,
   userLoginSchema,
-  userUpdateSchema,
   usersUpdateTheme,
 };

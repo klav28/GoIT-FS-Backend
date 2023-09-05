@@ -40,7 +40,7 @@ usersRouter.patch(
   '/current',
   authenticate,
   isEmptyBody,
-  validateBody(usersSchema.userUpdateSchema),
+  validateBody(usersSchema.userCredentialsSchema),
   usersController.patchCurrent
 );
 
