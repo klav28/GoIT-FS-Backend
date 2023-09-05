@@ -9,6 +9,7 @@ const swaggerDocument = require("./swagger/swagger-taskpro.json");
 
 import usersRouter from "./routes/api/auth-router.js";
 import boardRouters from "./routes/api/board/index.js";
+import needHelpRouters from "./routes/api/need-help.js";
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api/users", usersRouter);
 app.use("/api/board", boardRouters);
+app.use("/api/need-help", needHelpRouters);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

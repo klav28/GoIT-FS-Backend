@@ -883,6 +883,37 @@
           "bearerAuth" : [ ]
         } ]
       }
+    },
+    "/api/need-help" : {
+      "post" : {
+        "summary" : "Need help",
+        "tags" : [ "Need help" ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NeedHelp"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Email has been sent",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
     }
   },
   "servers" : [ {
@@ -1145,12 +1176,21 @@
           }
         }
       },
+      "NeedHelp" : {
+        "type" : "object",
+        "required" : [ "email", "message" ],
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      },
       "Error" : {
         "type" : "object",
         "properties" : {
-          "status" : {
-            "type" : "number"
-          },
           "message" : {
             "type" : "string"
           }
