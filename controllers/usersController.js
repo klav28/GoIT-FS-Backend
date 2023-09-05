@@ -15,11 +15,6 @@ const { JWT_SECRET } = process.env;
 
 import { controlWrapper } from '../decorators/index.js';
 
-const getCurrent = (req, res) => {
-  const { name, email, theme, avatarURL } = req.user;
-  res.json({ name, email, theme, avatarURL });
-};
-
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -116,6 +111,28 @@ const signinUser = async (req, res) => {
   });
 };
 
+const getCurrent = (req, res) => {
+  const { name, email, theme, avatarURL } = req.user;
+  res.json({ name, email, theme, avatarURL });
+};
+
+const patchCurrent = async (req, res) => {
+  const { _id } = req.user;
+
+  // const dUri = new DatauriParser();
+  // const file = dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer).content;
+
+  // const { url: avatarURL } = await cloudinary.uploader.upload(file, {
+  //   folder: 'avatars',
+  // });
+
+  // const password = await bcrypt.hash(req.body.password, 10);
+
+  const result = await User.findByIdAndUpdate(_id, { ...req.body }, { new: true });
+  const { name, email, theme, avatarURL } = result;
+  res.json({ name, email, theme, avatarURL });
+};
+
 const signoutUser = async (req, res) => {
   const { _id } = req.user;
   const user = await User.findByIdAndUpdate(_id, { token: '' });
@@ -176,6 +193,7 @@ export default {
   // verifyEmail: controlWrapper(verifyEmail),
   // resendVerifyEmail: controlWrapper(resendVerifyEmail),
   signinUser: controlWrapper(signinUser),
+  patchCurrent: controlWrapper(patchCurrent),
   signoutUser: controlWrapper(signoutUser),
   patchUserAvatar: controlWrapper(patchUserAvatar),
   updateUserTheme: controlWrapper(updateUserTheme),

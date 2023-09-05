@@ -1,19 +1,19 @@
-import express from "express";
+import express from 'express';
 
-import usersController from "../../controllers/usersController.js";
-import usersSchema from "../../schemas/users-joischeme.js";
-import { validateBody } from "../../decorators/index.js";
+import usersController from '../../controllers/usersController.js';
+import usersSchema from '../../schemas/users-joischeme.js';
+import { validateBody } from '../../decorators/index.js';
 import {
   isEmptyBody,
   //  isValidId,
   authenticate,
   upload,
-} from "../../middleware/index.js";
+} from '../../middleware/index.js';
 
 const usersRouter = express.Router();
 
 usersRouter.post(
-  "/register",
+  '/register',
   isEmptyBody,
   validateBody(usersSchema.userCredentialsSchema),
   usersController.registerUser
@@ -28,25 +28,33 @@ usersRouter.post(
 // );
 
 usersRouter.post(
-  "/signin",
+  '/signin',
   isEmptyBody,
   validateBody(usersSchema.userLoginSchema),
   usersController.signinUser
 );
 
-usersRouter.get("/current", authenticate, usersController.getCurrent);
-
-usersRouter.post("/signout", authenticate, usersController.signoutUser);
+usersRouter.get('/current', authenticate, usersController.getCurrent);
 
 usersRouter.patch(
-  "/avatar",
-  upload.single("avatar"),
+  '/current',
+  authenticate,
+  isEmptyBody,
+  validateBody(usersSchema.userUpdateSchema),
+  usersController.patchCurrent
+);
+
+usersRouter.post('/signout', authenticate, usersController.signoutUser);
+
+usersRouter.patch(
+  '/avatar',
+  upload.single('avatar'),
   authenticate,
   usersController.patchUserAvatar
 );
 
 usersRouter.patch(
-  "/theme",
+  '/theme',
   authenticate,
   validateBody(usersSchema.usersUpdateTheme),
   usersController.updateUserTheme
