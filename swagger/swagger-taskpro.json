@@ -180,6 +180,43 @@
             "description" : "Not bearer | Not ID"
           }
         }
+      },
+      "patch" : {
+        "tags" : [ "user" ],
+        "summary" : "Update Users credentials",
+        "description" : "Updates user name, email, password",
+        "operationId" : "patchCurrent",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewUser"
+              }
+            }
+          },
+          "description" : "User credentials"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "name" : {
+                      "type" : "string"
+                    },
+                    "email" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/users/signout" : {
@@ -887,7 +924,7 @@
     "/api/need-help" : {
       "post" : {
         "summary" : "Need help",
-        "tags" : [ "Need help" ],
+        "tags" : [ "need help" ],
         "requestBody" : {
           "required" : true,
           "content" : {
@@ -900,14 +937,7 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Email has been sent",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
+            "description" : "Email has been sent"
           }
         },
         "security" : [ {
@@ -1191,6 +1221,9 @@
       "Error" : {
         "type" : "object",
         "properties" : {
+          "status" : {
+            "type" : "number"
+          },
           "message" : {
             "type" : "string"
           }
